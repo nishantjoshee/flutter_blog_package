@@ -21,6 +21,7 @@ class ReadMore extends StatelessWidget {
   }
 }
 
+// ignore: must_be_immutable
 class BlogPackage extends StatefulWidget {
   BlogPackage({
     Key? key,
@@ -84,7 +85,7 @@ class _BlogPackageState extends State<BlogPackage> {
               ),
               image: DecorationImage(
                 image: widget.isAssetImage
-                    ? AssetImage(widget.imagePath)
+                    ? AssetImage(widget.imagePath) as ImageProvider
                     : CachedNetworkImageProvider(widget.imagePath),
               ),
             ),
