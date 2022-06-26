@@ -1,7 +1,3 @@
 library flutter_blog_package;
 
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+export 'package:flutter_blog_package/blog_package/blog_package.dart';
