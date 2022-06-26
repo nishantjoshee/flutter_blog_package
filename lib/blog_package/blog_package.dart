@@ -1,19 +1,122 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:shimmer/shimmer.dart';
 
+// ignore: must_be_immutable
 class ReadMore extends StatelessWidget {
-  const ReadMore({Key? key}) : super(key: key);
+  ReadMore({
+    Key? key,
+    required this.blogDetails,
+    required this.title,
+    required this.date,
+    required this.imageHeight,
+    required this.image,
+    required this.isAssetImage,
+    required this.author,
+    this.htmlTextstyle,
+    required this.changeHtmlStyle,
+  }) : super(key: key);
+
+  String blogDetails;
+  String title;
+  String date;
+  double imageHeight;
+  String image;
+  bool isAssetImage;
+  String author;
+  Map<String, Style>? htmlTextstyle;
+  bool changeHtmlStyle;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Read More Page'),
       ),
-      body: Column(
-        children: const [
-          Center(
-            child: Text('Read More Page'),
+      body: ListView(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(
+              left: 10,
+              top: 5,
+              bottom: 5,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5),
+                  child: Text(
+                    'By $author',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w300,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(
+                    top: 7,
+                    bottom: 5,
+                  ),
+                  child: Text(
+                    '🕒 $date',
+                    style: const TextStyle(
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          isAssetImage
+              ? Image.asset(image)
+              : CachedNetworkImage(
+                  height: imageHeight,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                  imageUrl: image,
+                  placeholder: (context, url) =>
+                      const Center(child: CircularProgressIndicator()),
+                  errorWidget: (context, error, child) {
+                    return Shimmer.fromColors(
+                      baseColor: Colors.grey.shade300,
+                      highlightColor: Colors.grey.shade100,
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: Colors.grey,
+                            borderRadius: BorderRadius.circular(12.0)),
+                        margin: const EdgeInsets.all(12.0),
+                        height: imageHeight,
+                        width: double.infinity,
+                      ),
+                    );
+                  },
+                ),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 5,
+              vertical: 5,
+            ),
+            child: Html(
+              data: blogDetails,
+              style: changeHtmlStyle
+                  ? htmlTextstyle!
+                  : {
+                      'p': Style(
+                        textAlign: TextAlign.justify,
+                        lineHeight: const LineHeight(1.4),
+                      ),
+                    },
+            ),
           ),
         ],
       ),
@@ -25,7 +128,6 @@ class ReadMore extends StatelessWidget {
 class BlogPackage extends StatefulWidget {
   BlogPackage({
     Key? key,
-    this.readMorePage = const ReadMore(),
     this.isAssetImage = false,
     this.imagePath = 'https://kopilahomenepal.org/img/gallery/school1.jpeg',
     this.blogTitle = 'Design your apps in your own way',
@@ -33,6 +135,8 @@ class BlogPackage extends StatefulWidget {
     this.nameStyle = const TextStyle(color: Colors.white38),
     this.lovecount = 33,
     this.commentCount = 10,
+    this.changeHtmlStyle = false,
+    this.htmlStyle,
     this.titleStyle = const TextStyle(
       fontWeight: FontWeight.w400,
       fontSize: 18,
@@ -41,9 +145,14 @@ class BlogPackage extends StatefulWidget {
     this.countstyle = const TextStyle(
       color: Color(0xff94A0B1),
     ),
+    this.postDate = '26 June,2022',
+    this.readmoreImageHeight = 200,
+    this.blogDetails =
+        '<p> Offering some respite to the general public grappling with the spike in fuel prices, Nepal Oil Corporation has decided to reduce the prices of petrol, diesel and kerosene despite facing huge losses after the government announced it would lift taxes levied on fuel.</p>'
+            '<p> A meeting of the ruling coalition held earlier today had decided to adjust the price of petroleum products in an attempt to reduce the problems suffered by the general public due to skyrocketing fuel prices.</p>'
+            '<p>Following the Cabinet\'s decision, the Minister of Industry, Commerce and Supplies Dilendra Prasad Badu stated that the prices of petroleum products have been reduced by removing taxes.</p><p>Thus, the price of petrol has been slashed by Rs 20 per litre to Rs 179 a litre. Similarly, the price of diesel and kerosene has been reduced by Rs 29 per litre to Rs 163 per litre each.</p><p>Thus, the price of petrol has been slashed by Rs 20 per litre to Rs 179 a litre. Similarly, the price of diesel and kerosene has been reduced by Rs 29 per litre to Rs 163 per litre each.</p><p>The recent hike in fuel prices has sparked multiple demonstrations and protests in the capital.</p><p>The NOC has raised the price of petroleum products dozens of times in line with the rates sent to it by the Indian Oil Corporation.</p><p>During its most recent revision, it had hiked the price of petrol by Rs 21 a litre, while the prices of diesel and kerosene had been raised by Rs 27 per litre. The price of domestic aviation fuel had also been raised by Rs 19 per litre.</p><p>Subsequently, the domestic airline operators as well as the public transport operators had increased their fares, adding to the woes of the general public and further fuelling fears of runaway inflation.</p>',
   }) : super(key: key);
 
-  Widget readMorePage;
   bool isAssetImage;
   String imagePath;
   String blogTitle;
@@ -53,6 +162,11 @@ class BlogPackage extends StatefulWidget {
   int commentCount;
   TextStyle titleStyle;
   TextStyle countstyle;
+  String postDate;
+  double readmoreImageHeight;
+  String blogDetails;
+  bool changeHtmlStyle;
+  Map<String, Style>? htmlStyle;
 
   @override
   State<BlogPackage> createState() => _BlogPackageState();
@@ -155,7 +269,18 @@ class _BlogPackageState extends State<BlogPackage> {
                           onTap: () => Navigator.push(
                             context,
                             CupertinoPageRoute(
-                                builder: (context) => widget.readMorePage),
+                              builder: (context) => ReadMore(
+                                title: widget.blogTitle,
+                                date: widget.postDate,
+                                image: widget.imagePath,
+                                isAssetImage: widget.isAssetImage,
+                                author: widget.authorName,
+                                imageHeight: widget.readmoreImageHeight,
+                                blogDetails: widget.blogDetails,
+                                changeHtmlStyle: widget.changeHtmlStyle,
+                                htmlTextstyle: widget.htmlStyle,
+                              ),
+                            ),
                           ),
                           child: const Text(
                             'Read More',
@@ -207,7 +332,7 @@ class _BlogPackageState extends State<BlogPackage> {
                     Padding(
                       padding: const EdgeInsets.only(left: 2),
                       child: Text(
-                        '26 June,2022',
+                        widget.postDate,
                         style: widget.nameStyle,
                       ),
                     ),
