@@ -32,7 +32,7 @@ class BlogPackage extends StatefulWidget {
     this.authorName = 'Author Name',
     this.nameStyle = const TextStyle(color: Colors.white38),
     this.lovecount = 33,
-    this.commentCount = 08,
+    this.commentCount = 10,
     this.titleStyle = const TextStyle(
       fontWeight: FontWeight.w400,
       fontSize: 18,
@@ -49,8 +49,8 @@ class BlogPackage extends StatefulWidget {
   String blogTitle;
   String authorName;
   TextStyle nameStyle;
-  double lovecount;
-  double commentCount;
+  int lovecount;
+  int commentCount;
   TextStyle titleStyle;
   TextStyle countstyle;
 
