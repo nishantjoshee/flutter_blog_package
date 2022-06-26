@@ -27,7 +27,7 @@ class BlogPackage extends StatefulWidget {
     Key? key,
     this.readMorePage = const ReadMore(),
     this.isAssetImage = false,
-    this.imagePath = 'https:kopilahomenepal.org/img/gallery/school1.jpeg',
+    this.imagePath = 'https://kopilahomenepal.org/img/gallery/school1.jpeg',
     this.blogTitle = 'Design your apps in your own way',
     this.authorName = 'Author Name',
     this.nameStyle = const TextStyle(color: Colors.white38),
